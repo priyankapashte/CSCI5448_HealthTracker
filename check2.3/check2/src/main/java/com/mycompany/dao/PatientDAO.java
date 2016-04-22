@@ -22,7 +22,8 @@ public class PatientDAO {
 		private int height;
 		private int weight;
 		
-		public String addUser(Patient patient)
+		/* modified to return patient object: Shreya */
+		public Patient addUser(Patient patient)
 		{
 	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	 		Session session = sessionFactory.openSession();
@@ -30,8 +31,22 @@ public class PatientDAO {
 	 		// this would save the Student_Info object into the database
 	 		 session.save(patient);	
 	 		 session.getTransaction().commit();
+	 		 //System.out.println("ID after saving: "+ patient.id);
 	 		// session.close();
-	 		 return patient.getFirstName();
+	 		 return patient;
+		}
+		
+		/* Function to update patient profile in database: shreya*/
+		public void editPatientProfile(Patient patient)
+		{
+	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+	 		Session session = sessionFactory.openSession();
+	 		session.beginTransaction();
+	 		// this would save the Student_Info object into the database
+	 		 session.saveOrUpdate(patient);	
+	 		 session.getTransaction().commit();
+	 		// session.close();
+	 		 //return patient.getFirstName();
 		}
 		
 		public PatientDAO()

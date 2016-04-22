@@ -6,15 +6,19 @@ import com.mycompany.dao.*;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mycompany.hibernate.HibernateUtil;
@@ -23,6 +27,8 @@ import com.mycompany.hibernate.HibernateUtil;
 /**
  * Handles requests for the application home page.
  */
+/* Added @SessionAttributes to maintain object state across pages: Shreya */ 
+@SessionAttributes({"patientForm","doctorForm"})
 @Controller
 public class HomeController {
 	protected String userName;
@@ -38,11 +44,25 @@ public class HomeController {
 	private String location;
 	private String specialization;
 	private String day;
-	private String time;
+	/* Added appropriate attributes to include start time and end time: Shreya */
+	private String starttime;
+	private String endtime;
 	//protected int id;
 	UserDAO userdao= new UserDAO();
 	PatientDAO patientdao = new PatientDAO();
 	DoctorDAO doctordao = new DoctorDAO();
+	
+	/*Added to persist object through pages*/
+	@ModelAttribute("patientForm")
+    public Patient patient() {
+        return new Patient();
+    }
+	
+	/*Added to persist object through pages*/
+	@ModelAttribute("doctorForm")
+    public Doctor doctor() {
+        return new Doctor();
+    }
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	 public String FirstPage(@ModelAttribute("userForm") User user,ModelMap model) 
@@ -55,8 +75,8 @@ public class HomeController {
 	 {
 			// Write the Student_Info object into the database
 			User_Test user1 = new User_Test();
-			user1.setUsername("Viraj");
-			user1.setPassword("pp23");
+			user1.setUsername("kl");
+			user1.setPassword("kl");
 
 			
 			SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -81,34 +101,50 @@ public class HomeController {
 	    }
 	 
 	 @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-	 public ModelAndView registerUser(@RequestParam ("acctype")String acc,@ModelAttribute("patientForm")Patient patient,@ModelAttribute("doctorForm")Doctor doctor, ModelMap model) 
+	 public ModelAndView registerUser(@RequestParam ("acctype")String acc, @ModelAttribute("patientForm")Patient patient,@ModelAttribute("doctorForm")Doctor doctor, ModelMap model) 
 	 {
 		 	if(acc.equals("patient"))
 		 		return new ModelAndView("registerPatient", "patient", new Patient(userName,password,firstName,lastName,age,gender,telephone,email,height,weight));
 		 	else  
-		 		return new ModelAndView("registerDoctor", "doctor", new Doctor(userName,password,firstName,lastName,age,gender,telephone,email,location,specialization,day,time));
-	 }
-
+		 		return new ModelAndView("registerDoctor", "doctor", new Doctor(userName,password,firstName,lastName,age,gender,telephone,email,location,specialization,day,starttime,endtime));
+	 } 
+	 
+	 /*Controller method to save data into database and create patient profile: shreya*/
 	 @RequestMapping(value = "/registerPatient", method = RequestMethod.POST)
-	 public String welcomePatient (@ModelAttribute("patientForm") Patient patient,ModelMap model)
-	 {
-		 firstName=patientdao.addUser(patient); 
-		 System.out.println(firstName);
-		 model.addAttribute("firstName",firstName);
-		 return "welcomePatient";
+	 public ModelAndView welcomePatient (@ModelAttribute("patientForm") Patient patient,ModelMap model)
+	 { 
+		 return new ModelAndView("welcomePatient", "patient", patientdao.addUser(patient));
 	 }
 	 
+	 /*Controller method to save data into database and create doctor profile:shreya*/
 	 @RequestMapping(value = "/registerDoctor", method = RequestMethod.POST)
-	 public String welcomeDoctor(@ModelAttribute("doctorForm") Doctor doctor,ModelMap model) 
+	 public ModelAndView welcomeDoctor(@ModelAttribute("doctorForm") Doctor doctor,ModelMap model) 
 	 {
-		 doctordao.addUser(doctor); 
-		 return "welcomeDoctor";
+		 return new ModelAndView("welcomeDoctor", "doctor", doctordao.addUser(doctor));
 	 }
 	 
+	 /*Controller method to handle requests on patient's profile: shreya*/
 	 @RequestMapping(value = "/welcomePatient", method = RequestMethod.POST)
-	 public String appointmentScheduler(@ModelAttribute("userForm") User user,ModelMap model) 
+	 public ModelAndView welcomePatient(@RequestParam("edit")String edit, @ModelAttribute("patientForm") Patient patient, ModelMap model, BindingResult result) 
 	 {
-		 		return "appointmentScheduler";
+		 if(edit.equals("Edit Profile"))
+		 {
+			 return new ModelAndView("editPatientProfile", "patient", patient);
+		 }
+		 else
+			 return new ModelAndView("appointmentScheduler", "patient", patient);
+	 }
+	 
+	 /*Controller method to handle requests on doctor's profile: shreya*/
+	 @RequestMapping(value = "/welcomeDoctor", method = RequestMethod.POST)
+	 public ModelAndView welcomeDoctor(@RequestParam("edit")String edit, @ModelAttribute("doctorForm") Doctor doctor, ModelMap model, BindingResult result) 
+	 {
+		 if(edit.equals("Edit Profile"))
+		 {
+			 return new ModelAndView("editDoctorProfile", "doctor", doctor);
+		 }
+		 else
+			 return new ModelAndView("welcomeDoctor", "doctor", doctor);
 	 }
 	 
 	 @RequestMapping(value = "/scheduler", method = RequestMethod.POST)
@@ -121,4 +157,20 @@ public class HomeController {
 		 else 
 			 return "cancelAppointment";
 	 }
+	 
+	 /*Controller method to edit patient profile: shreya*/
+		 @RequestMapping(value = "/editPatientProfile", method = RequestMethod.POST)
+		 public String editPatientProfile(@ModelAttribute("patientForm") Patient patient, ModelMap model, BindingResult result) 
+		 {
+			 patientdao.editPatientProfile(patient);
+			 return "welcomePatient";
+		 }
+		 
+		/*Controller method to edit doctor profile:shreya*/
+		 @RequestMapping(value = "/editDoctorProfile", method = RequestMethod.POST)
+		 public String editDoctorProfile(@ModelAttribute("doctorForm") Doctor doctor, ModelMap model, BindingResult result) 
+		 {
+			 doctordao.editDoctorProfile(doctor);
+			 return "welcomeDoctor";
+		 }
 }

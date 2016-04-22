@@ -14,13 +14,18 @@ import java.util.*;
 public class Patient extends User
 {
 	@Id
-	@GeneratedValue  
+	@GeneratedValue
 	protected int id;
 	private int height;
 	private int weight;
 //	private Appointment appointment;
 //	private Doctor doctor;
 //	private HealthParameters healthparameters;
+	
+	//Added constructor for id: shreya
+	public int getId() {
+		return id;
+	}
 	public int getHeight() {
 		return height;
 	}
@@ -61,6 +66,15 @@ public class Patient extends User
 	public Patient(String userName, String password, String firstName, String lastName, int age, String gender,
 			String telephone, String email,int height, int weight) {
 		super(userName, password, firstName, lastName, age, gender, telephone, email);
+		this.height = height;
+		this.weight = weight;
+	}
+	
+	//shreya
+	public Patient(int id, String userName, String password, String firstName, String lastName, int age, String gender,
+			String telephone, String email,int height, int weight) {
+		super(userName, password, firstName, lastName, age, gender, telephone, email);
+		this.id = id;
 		this.height = height;
 		this.weight = weight;
 	}

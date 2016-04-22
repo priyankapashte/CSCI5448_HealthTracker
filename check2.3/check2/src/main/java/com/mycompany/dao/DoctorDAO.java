@@ -27,17 +27,18 @@ public class DoctorDAO {
 		private String location;
 		private String specialization;
 		private String day;
-		private String time;
+		private String starttime;
+		private String endtime;
 		
-		public void addUser(Doctor doctor)
+		/*modified method to return doctor object: shreya*/
+		public Doctor addUser(Doctor doctor)
 		{
 	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	 		Session session = sessionFactory.openSession();
 	 		session.beginTransaction();
-	 		// this would save the Student_Info object into the database
-	 		 session.save(doctor);	
-	 		 session.getTransaction().commit();
-	 		// session.close();
+	 		session.save(doctor);	
+	 		session.getTransaction().commit();
+	 		return doctor;
 		}
 		
 		   /* Method to  READ all the Doctors */
@@ -56,6 +57,17 @@ public class DoctorDAO {
 		        session.getTransaction().commit();
 		   }
 		
+		 
+		/*Function to update profile details: shreya*/
+			public void editDoctorProfile(Doctor doctor)
+			{
+		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		session.saveOrUpdate(doctor);	
+		 		session.getTransaction().commit();
+		 		
+			}
 		public DoctorDAO()
 		{
 			
