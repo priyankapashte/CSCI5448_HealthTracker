@@ -51,7 +51,7 @@ public class DBHandler{
 		            }
 		        session.getTransaction().commit();
 		   }
-			public Patient addPatient(Patient patient)
+			public String addPatient(Patient patient)
 			{
 		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		 		Session session = sessionFactory.openSession();
@@ -60,7 +60,7 @@ public class DBHandler{
 		 		 session.save(patient);	
 		 		 session.getTransaction().commit();
 		 		// session.close();
-		 		 return patient;
+		 		 return patient.getFirstName();
 			}
 			public boolean validateUsername(String username, String acctype) throws NamingException{
 			    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -76,6 +76,28 @@ public class DBHandler{
 		 		}
 		        return true;
 		    }
+			public Patient getPatient(String username){
+				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		String queried="from Patient P where P.userName = :username" ;
+		 		System.out.println(queried);
+		 		Query query=  session.createQuery(queried);
+		 		query.setParameter("username",username);
+		 		java.util.List<Patient> patient = query.list();
+				return patient.get(0);
+			}
+			public Doctor getDoctorbyID(int ID){
+				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		String queried="from Doctor D where D.id = :ID" ;
+		 		System.out.println(queried);
+		 		Query query=  session.createQuery(queried);
+		 		query.setParameter("ID",ID);
+		 		java.util.List<Doctor> doctor = query.list();
+				return doctor.get(0);
+			}
 			public String validateUser(String username, String password) throws NamingException 
 		    {
 				String UserType = "Unregistered";
@@ -143,6 +165,25 @@ public class DBHandler{
 		 		java.util.List<Doctor> allDoctors = query.list();
 		 		return allDoctors;
 			}
+			
+			public void editDoctorProfile(Doctor doctor)
+	 			{
+	 		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+	 		 		Session session = sessionFactory.openSession();
+	 		 		session.beginTransaction();
+	 		 		session.saveOrUpdate(doctor);	
+	 		 		session.getTransaction().commit();
+		 		
+	 			}
+			public void editPatientProfile(Patient patient)
+ 			{
+ 		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+ 		 		Session session = sessionFactory.openSession();
+ 		 		session.beginTransaction();
+ 		 		session.saveOrUpdate(patient);	
+ 		 		session.getTransaction().commit();
+	 		
+ 			}
 		
 
 }
