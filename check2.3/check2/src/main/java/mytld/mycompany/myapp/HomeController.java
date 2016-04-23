@@ -78,18 +78,18 @@ public class HomeController {
 	 @RequestMapping(value = "/login", method = RequestMethod.POST)
 	 public String Login(@RequestParam ("Username")String Username, @RequestParam ("Password")String Password,ModelMap model, HttpServletRequest request) throws NamingException 
 	 {
-		 System.out.println("NEEEEE");
-		 System.out.println(Username);
-		 System.out.println(Password);
 		 String Result = userdao.validateUser(Username, Password); 
-		 System.out.println(Result);
 		 if (Result.equals("Patient")){
 			 Patient patient = userdao.getPatient(Username);
 			 HttpSession session = request.getSession();
 			 session.setAttribute("patient", patient);
+			 model.addAttribute("firstName",patient.getFirstName());
 			 return "welcomePatient";
 		 }
 		 else if (Result.equals("Doctor")){
+			 Doctor doctor = userdao.getDoctor(Username);
+			 HttpSession session = request.getSession();
+			 session.setAttribute("doctor", doctor);
 			 return "welcomeDoctor";
 		 }
 		 else{
@@ -108,18 +108,58 @@ public class HomeController {
 	    }
 	 
 	 @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-	 public ModelAndView registerUser(@RequestParam ("uname")String user, @RequestParam ("pass")String pass,@RequestParam ("acctype")String acc,@ModelAttribute("patientForm")Patient patient,@ModelAttribute("doctorForm")Doctor doctor, HttpServletRequest request) 
+	 public ModelAndView registerUser(@RequestParam ("uname")String user, @RequestParam ("pass")String pass,@RequestParam ("acctype")String acc,@ModelAttribute("patientForm")Patient patient,@ModelAttribute("doctorForm")Doctor doctor, HttpServletRequest request) throws NamingException 
 	 {
 		 	HttpSession session = request.getSession();
-		 	session.setAttribute("uname", request.getParameter("uname"));
-		 	session.setAttribute("pass", request.getParameter("pass"));
+
+		 	
 		 	if(acc.equals("patient")){
-		 		System.out.println(firstName);
-		 		System.out.println(user);
-		 		return new ModelAndView("registerPatient", "patient", new Patient(userName,password,firstName,lastName,age,gender,telephone,email,height,weight));
+		 		boolean isUserNamePresent=userdao.validateUsername(user,"Patient");
+	    		boolean isValidPassword=validatePassword(pass);
+	    		if (!isUserNamePresent && isValidPassword){
+	    		 	session.setAttribute("uname", request.getParameter("uname"));
+	    		 	session.setAttribute("pass", request.getParameter("pass"));
+    		 		return new ModelAndView("registerPatient", "patient", new Patient(userName,password,firstName,lastName,age,gender,telephone,email,height,weight));
+        		}
+        		else if(isUserNamePresent && isValidPassword)
+        		{
+    				request.setAttribute("message", "Username is already taken. Try a new one"); // Will be available as ${message}
+    				return new ModelAndView("registration");
+        		}
+        		else if(!isUserNamePresent && !isValidPassword)
+        		{
+    				request.setAttribute("message", "Password does not meet Requirements. Try a new one"); // Will be available as ${message}
+    				return new ModelAndView("registration");
+        		}
+        		else{
+    				request.setAttribute("message", "Username is already taken. Password is Invalid"); // Will be available as ${message}
+    				return new ModelAndView("registration");
+
+        		}
 		 	}
-	 		else  
-		 		return new ModelAndView("registerDoctor", "doctor", new Doctor(userName,password,firstName,lastName,age,gender,telephone,email,location,specialization,day,time));
+	 		else{
+		 		boolean isUserNamePresent=userdao.validateUsername(user,"Patient");
+	    		boolean isValidPassword=validatePassword(pass);
+	    		if (!isUserNamePresent && isValidPassword){
+	    		 	session.setAttribute("uname", request.getParameter("uname"));
+	    		 	session.setAttribute("pass", request.getParameter("pass"));
+			 		return new ModelAndView("registerDoctor", "doctor", new Doctor(userName,password,firstName,lastName,age,gender,telephone,email,location,specialization,day,starttime,endtime));
+        		}
+        		else if(isUserNamePresent && isValidPassword)
+        		{
+    				request.setAttribute("message", "Username is already taken. Try a new one"); // Will be available as ${message}
+    				return new ModelAndView("registration");
+        		}
+        		else if(!isUserNamePresent && !isValidPassword)
+        		{
+    				request.setAttribute("message", "Password does not meet Requirements. Try a new one"); // Will be available as ${message}
+    				return new ModelAndView("registration");
+        		}
+        		else{
+    				request.setAttribute("message", "Username is already taken. Password is Invalid"); // Will be available as ${message}
+    				return new ModelAndView("registration");
+        		}
+	 		}
 	 }
 
 	 @RequestMapping(value = "/registerPatient", method = RequestMethod.POST)
@@ -140,7 +180,7 @@ public class HomeController {
      	 String uname=(String) request.getSession().getAttribute("uname");
      	 String pass=(String) request.getSession().getAttribute("pass");
      	 doctor.setUserName(uname);
-     	  doctor.setPassword(pass);
+     	 doctor.setPassword(pass);
 		 userdao.addDoctor(doctor); 
 		 return "welcomeDoctor";
 	 }

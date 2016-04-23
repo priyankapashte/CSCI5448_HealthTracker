@@ -87,6 +87,17 @@ public class DBHandler{
 		 		java.util.List<Patient> patient = query.list();
 				return patient.get(0);
 			}
+			public Doctor getDoctor(String username){
+				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		String queried="from Doctor D where D.userName = :username" ;
+		 		System.out.println(queried);
+		 		Query query=  session.createQuery(queried);
+		 		query.setParameter("username",username);
+		 		java.util.List<Doctor> doctor = query.list();
+				return doctor.get(0);
+			}
 			public Doctor getDoctorbyID(int ID){
 				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		 		Session session = sessionFactory.openSession();
