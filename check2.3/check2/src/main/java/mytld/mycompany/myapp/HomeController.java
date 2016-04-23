@@ -74,6 +74,7 @@ public class HomeController {
 	 {
 	        return "index";
 	 }
+
 	
 	 @RequestMapping(value = "/login", method = RequestMethod.POST)
 	 public String Login(@RequestParam ("Username")String Username, @RequestParam ("Password")String Password,ModelMap model, HttpServletRequest request) throws NamingException 
@@ -190,6 +191,48 @@ public class HomeController {
 	 {
 		 		return "appointmentScheduler";
 	 }
+	 @RequestMapping(value = "/SetDoctor", method = RequestMethod.POST)
+	 public ModelAndView SetDoctor(@ModelAttribute("userForm") User user,ModelMap model, HttpServletRequest request) 
+	 {
+		 		HttpSession session = request.getSession();
+				Patient patient = (Patient)session.getAttribute("patient");
+				Doctor doctor = patient.getDoctor();
+				if (doctor==null){
+					return new ModelAndView("adddoctor");
+				}
+				else{
+					Doctor AdvisingDoctor=patient.getDoctor();
+					String DocInfo = AdvisingDoctor.getFirstName()+ " "+AdvisingDoctor.getLastName()+" "+AdvisingDoctor.getEmail() 
+					         +" "+ AdvisingDoctor.getAge()+" "+AdvisingDoctor.getTelephone()+" "+AdvisingDoctor.getDay()
+					         +" "+AdvisingDoctor.getLocation()+" "+AdvisingDoctor.getSpecialization()+ " "+AdvisingDoctor.getStarttime()
+					         +" "+AdvisingDoctor.getEndtime();
+					System.out.println(DocInfo);
+					model.addAttribute("DocInfo",DocInfo);
+					return new ModelAndView("removedoctor");
+				}
+					
+	 }
+	 @RequestMapping(value = "/AddDoctor", method = RequestMethod.POST)
+	 public String AddDoctor(@ModelAttribute("userForm") User user,ModelMap model) 
+	 {
+		 java.util.List Location = userdao.getLocations(); 
+		 for (int i = 0; i<Location.size();i++){		 
+			 System.out.println(Location.get(i));
+		 }
+		 model.addAttribute("Location",Location);
+		 model.addAttribute("Locations","Locations");
+		 List<String> DoctorInfo=new ArrayList<String>();
+		 model.addAttribute("Display","display:none");
+		 model.addAttribute("Doctor",DoctorInfo);
+		 model.addAttribute("Doctors","Doctors");
+		 java.util.List Specialization = userdao.getSpecializations(); 
+		 for (int i = 0; i<Specialization.size();i++){		 
+			 System.out.println(Specialization.get(i));
+		 }
+		 model.addAttribute("Specialization",Specialization);
+		 model.addAttribute("Specializations","Specializations");
+		 return "displayDoctors";
+	 }
 	 
 	 @RequestMapping(value = "/scheduler", method = RequestMethod.POST)
 	 public String appointmentScheduler(@RequestParam ("appointtype")String app,@ModelAttribute("userForm") User user,ModelMap model) 
@@ -217,6 +260,46 @@ public class HomeController {
 		 	return "rescheduleAppointment";
 		 else 
 			 return "cancelAppointment";
+	 }
+	 
+	 @RequestMapping(value = "/searchadvisingdoctor", method = RequestMethod.POST)
+	 public String DisplayDoctors(@RequestParam ("LocationSelected")String loc,@RequestParam ("SortPref")String sort,@RequestParam ("SpecializationSelected")String Spl,@ModelAttribute("userForm") User user,ModelMap model) 
+	 {
+		 java.util.List<Doctor> Doctors = userdao.getDoctors(loc,Spl,sort); 
+		 List<String> DoctorInfo=new ArrayList<String>();
+		 for (int i = 0; i<Doctors.size();i++){	
+			 DoctorInfo.add(Doctors.get(i).getId()+ " "+Doctors.get(i).getFirstName()+ " "+Doctors.get(i).getLastName()+" "+Doctors.get(i).getEmail() 
+					         +" "+ Doctors.get(i).getAge()+" "+Doctors.get(i).getTelephone()+" "+Doctors.get(i).getDay()
+					         +" "+Doctors.get(i).getLocation()+" "+Doctors.get(i).getSpecialization()+ " "+Doctors.get(i).getStarttime()
+					         +" "+Doctors.get(i).getEndtime());
+			 System.out.println(Doctors.get(i).getFirstName());
+		 }
+		 if(DoctorInfo.size()==0){
+			 model.addAttribute("Display","display:none");
+		 }
+		 else{
+			 model.addAttribute("Display","display:show"); 
+		 }
+		 model.addAttribute("Doctor",DoctorInfo);
+		 model.addAttribute("Doctors","Doctors");
+		 
+		 java.util.List Location = userdao.getLocations(); 
+		 for (int i = 0; i<Location.size();i++){		 
+			 System.out.println(Location.get(i));
+		 }
+		 model.addAttribute("Location",Location);
+		 model.addAttribute("Locations","Locations");
+		 
+		 java.util.List Specialization = userdao.getSpecializations(); 
+		 for (int i = 0; i<Specialization.size();i++){		 
+			 System.out.println(Specialization.get(i));
+		 }
+		 model.addAttribute("Specialization",Specialization);
+		 model.addAttribute("Specializations","Specializations");
+		
+		 model.addAttribute("Location",Location);
+		 model.addAttribute("Locations","Locations");
+		 return "displayDoctors";
 	 }
 	 @RequestMapping(value = "/search", method = RequestMethod.POST)
 	 public String DisplaySearch(@RequestParam ("LocationSelected")String loc,@RequestParam ("SortPref")String sort,@RequestParam ("SpecializationSelected")String Spl,@ModelAttribute("userForm") User user,ModelMap model) 
@@ -268,6 +351,25 @@ public class HomeController {
 		//userdao.editPatientProfile(patient);
 		return "AppointmentList";
 	 }
-	 
-	 
+	 @RequestMapping(value = "/addAdvisingDoctor", method = RequestMethod.POST)
+	 public String addAdvisingDoctor(@RequestParam ("SelectedDoctor")String doc, HttpServletRequest request) 
+	 {
+		System.out.println(doc); 
+		Patient patient = (Patient)request.getSession().getAttribute("patient");
+		System.out.println(patient.getFirstName()); 
+		int ID= Integer.parseInt(doc.split("\\s+")[0]);
+		System.out.println(ID);
+		Doctor doctor = userdao.getDoctorbyID(ID);
+		patient.setDoctor(doctor);
+		userdao.editPatientProfile(patient);
+		return "SuccessAddingDoc";
+	 }
+	 @RequestMapping(value = "/DeselectDoctor", method = RequestMethod.POST)
+	 public ModelAndView removeAdvisingDoctor(HttpServletRequest request) 
+	 {
+			Patient patient = (Patient)request.getSession().getAttribute("patient");
+			patient.setDoctor(null);
+			userdao.editPatientProfile(patient);
+			return new ModelAndView("adddoctor");
+	 }
 }

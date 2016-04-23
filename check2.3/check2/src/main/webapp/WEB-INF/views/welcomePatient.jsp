@@ -9,6 +9,9 @@
     <form action="welcomePatient" method="post">
        <input type="submit" name="appoint" value="Appointment Scheduler">
     </form>
+    <form action="SetDoctor" method="post">
+       <input type="submit" name="setdoc" value="Select/Deselect Advising Doctor">
+    </form>
     </body>
 </html>
 
