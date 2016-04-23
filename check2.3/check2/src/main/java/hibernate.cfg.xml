@@ -9,7 +9,7 @@
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.url">jdbc:mysql://localhost:3306/posturite</property>
         <property name="connection.username">root</property>
-        <property name="connection.password">mayflower</property>
+        <property name="connection.password">root</property>
         
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">1</property>
@@ -23,15 +23,17 @@
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">true</property>
 
-        <!-- Drop the existing tables and create new one -->
-        <property name="hbm2ddl.auto">create</property> 
+        <!-- Drop the existing tables and create new one --> 
+        <property name="hbm2ddl.auto">update</property>
  
         <!-- Mention here all the model classes along with their package name -->
  		<mapping class="com.mycompany.model.User_Test"/>
  		<mapping class="com.mycompany.model.User"/>
  		<mapping class="com.mycompany.model.Patient"/> 
  		<mapping class="com.mycompany.model.Doctor"/> 
- 		
+ 		<mapping class="com.mycompany.model.HealthParameters"/> 
+ 		<mapping class="com.mycompany.model.Appointment"/> 
+ 		 
     </session-factory>
 </hibernate-configuration>
  

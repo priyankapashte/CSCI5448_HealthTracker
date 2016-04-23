@@ -5,27 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import java.util.*;
 
 @Entity
 @Table(name="PATIENT")
 public class Patient extends User
 {
 	@Id
-	@GeneratedValue
+	@GeneratedValue  
 	protected int id;
 	private int height;
 	private int weight;
-//	private Appointment appointment;
-//	private Doctor doctor;
-//	private HealthParameters healthparameters;
-	
-	//Added constructor for id: shreya
-	public int getId() {
-		return id;
-	}
+	@OneToOne(cascade=CascadeType.ALL)
+	private Appointment appointment;
+	@ManyToOne(cascade=CascadeType.ALL)
+	private Doctor doctor;
+	@OneToOne(cascade=CascadeType.ALL)
+	private HealthParameters healthparameters;
 	public int getHeight() {
 		return height;
 	}
@@ -38,25 +35,25 @@ public class Patient extends User
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
-/*	public Appointment getAppointment() {
+	public Appointment getAppointment() {
 		return appointment;
 	}
 	public void setAppointment(Appointment appointment) {
 		this.appointment = appointment;
 	}
-	@ManyToOne(cascade=CascadeType.ALL)
+	
 	public Doctor getDoctor() {
 		return doctor;
 	}
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
 	}
-/*	public HealthParameters getHealthparameters() {
+	public HealthParameters getHealthparameters() {
 		return healthparameters;
 	}
 	public void setHealthparameters(HealthParameters healthparameters) {
 		this.healthparameters = healthparameters;
-	}*/
+	}
 	
 	public Patient()
 	{
@@ -69,14 +66,4 @@ public class Patient extends User
 		this.height = height;
 		this.weight = weight;
 	}
-	
-	//shreya
-	public Patient(int id, String userName, String password, String firstName, String lastName, int age, String gender,
-			String telephone, String email,int height, int weight) {
-		super(userName, password, firstName, lastName, age, gender, telephone, email);
-		this.id = id;
-		this.height = height;
-		this.weight = weight;
-	}
 }
-

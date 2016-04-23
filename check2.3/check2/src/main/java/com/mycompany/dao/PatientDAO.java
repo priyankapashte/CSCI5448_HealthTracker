@@ -1,5 +1,16 @@
 package com.mycompany.dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -10,20 +21,9 @@ import com.mycompany.model.*;
 
 public class PatientDAO {
 	
-		protected int id;
-		protected String userName;
-		protected String password;
-		protected String firstName;
-		protected String lastName;
-		protected int age;
-		protected String gender;
-		protected String telephone;
-		protected String email;
-		private int height;
-		private int weight;
+
 		
-		/* modified to return patient object: Shreya */
-		public Patient addUser(Patient patient)
+		public String addUser(Patient patient)
 		{
 	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	 		Session session = sessionFactory.openSession();
@@ -31,24 +31,24 @@ public class PatientDAO {
 	 		// this would save the Student_Info object into the database
 	 		 session.save(patient);	
 	 		 session.getTransaction().commit();
-	 		 //System.out.println("ID after saving: "+ patient.id);
 	 		// session.close();
-	 		 return patient;
+	 		 return patient.getFirstName();
 		}
 		
-		/* Function to update patient profile in database: shreya*/
-		public void editPatientProfile(Patient patient)
-		{
-	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		public String validateUser(String username, String password) throws NamingException 
+	    {
+		    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	 		Session session = sessionFactory.openSession();
 	 		session.beginTransaction();
-	 		// this would save the Student_Info object into the database
-	 		 session.saveOrUpdate(patient);	
-	 		 session.getTransaction().commit();
-	 		// session.close();
-	 		 //return patient.getFirstName();
-		}
-		
+	 		Query query=  session.createQuery("from Patient");
+	 		List<Patient> allPatients = query.list();
+	 		for(int i=0; i <allPatients.size();i++){
+	 			Patient patient=(Patient)allPatients.get(i);
+	 			System.out.println(patient.getFirstName());
+	 		}
+	 		return "jjjj";
+	 		
+	     } 
 		public PatientDAO()
 		{
 			

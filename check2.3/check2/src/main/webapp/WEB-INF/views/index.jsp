@@ -24,11 +24,11 @@
 
 			<div class="pay_form">
 				<div id="success" align='center'>${message}</div>
-				 <form:form action="login" method="post" modelAttribute="userForm">
-					<form:input path="userName" />
-					<form:input path="Password" />
-					<input type="submit" value="Login">
-				</form:form>
+				 <form action="login" method="post">
+					<input class="logo" type="text" name='Username'value="Username" required >
+					<input class="key" type="password" name='Password'value="Password" required>
+					<input type="submit" name="login" value="Login">
+				</form>
 				<form action="registration" method="POST">
 					
 					<input type="submit"  value="Register">
