@@ -17,47 +17,40 @@
                 <tbody>
                     <tr>
                         <td>First Name</td>
-                        <td><input type="text" name="firstName" value="" /></td>
+                        <td><input type="text" name="firstName" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Last Name</td>
-                        <td><input type="text" name="lastName" value="" /></td>
+                        <td><input type="text" name="lastName" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input type="text" name="email" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>User Name</td>
-                        <td><input type="text" name="userName" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>Password</td>
-                        <td><input type="password" name="password" value="" /></td>
+                        <td><input type="text" name="email" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Age</td>
-                        <td><input type="text" name="age" value="" /></td>
+                        <td><input type="text" name="age" value="" required /></td>
                     </tr>
                     <tr>
                         <td>Gender</td>
-                        <td><form action="">
-							  <input type="radio" name="gender" value="male"> Male<br>
-							  <input type="radio" name="gender" value="female"> Female<br>
-							  <input type="radio" name="gender" value="other"> Other
+                        <td><form action="" >
+							  <input type="radio" name="gender" value="male"required> Male<br>
+							  <input type="radio" name="gender" value="female"required> Female<br>
+							  <input type="radio" name="gender" value="other"required> Other
 							</form>
 						</td>
                     </tr>
                      <tr>
                         <td>Telephone</td>
-                        <td><input type="text" name="telephone" value="" /></td>
+                        <td><input type="text" name="telephone" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Availability - Days</td>
-						<td>	  <input type="checkbox" name="day" value="Monday"> Monday<br>
-							  <input type="checkbox" name="day" value="Tuesday"> Tuesday<br>
+                        <td>
+							  <input type="checkbox" name="day" value="Monday" > Monday<br>
+							  <input type="checkbox" name="day" value="Tuesday" > Tuesday<br>
 							  <input type="checkbox" name="day" value="Wednesday"> Wednesday<br>
-							  <input type="checkbox" name="day" value="Thrusday"> Thrusday<br>
+							  <input type="checkbox" name="day" value="Thursday"> Thursday<br>
 							  <input type="checkbox" name="day" value="Friday"> Friday<br>
 							  <input type="checkbox" name="day" value="Saturday"> Saturday<br>
 							  <input type="checkbox" name="day" value="Sunday"> Sunday<br>
@@ -66,8 +59,8 @@
                     <tr>
                         <td>Availability - Start Time</td>
                         <td>
-							  <select name='starttime'>
-								  <option value="0">00:00</option>
+							  <select name='starttime' required>
+								  <option value="0" selected>00:00</option>
 								  <option value="1">01:00</option>
 								  <option value="2">02:00</option>
 								  <option value="3">03:00</option>
@@ -92,13 +85,13 @@
 								  <option value="22">22:00</option>
 								  <option value="23">23:00</option>
 							  </select>
-						</td>	
-						
+						</td>
                     </tr>
-                                        <tr>
-                        <td>Availability - End Time</td>              
-						<td>	  <select name='endtime'>
-								  <option value="0">00:00</option>
+                     <tr>
+                        <td>Availability - End Time</td>
+                        <td>
+							  <select name='endtime' required>
+								  <option value="0" selected>00:00</option>
 								  <option value="1">01:00</option>
 								  <option value="2">02:00</option>
 								  <option value="3">03:00</option>
@@ -123,15 +116,15 @@
 								  <option value="22">22:00</option>
 								  <option value="23">23:00</option>
 							  </select>
-							</td>
+						</td>
                     </tr>
                     <tr>
                         <td>Specialization</td>
-                        <td><input type="text" name="specialization" value="" /></td>
+                        <td><input type="text" name="specialization" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Location</td>
-                        <td><input type="text" name="location" value="" /></td>
+                        <td><input type="text" name="location" value="" required/></td>
                     </tr>
                     <tr>
                         <td><input type="submit" name='submit' value="Submit" /></td>

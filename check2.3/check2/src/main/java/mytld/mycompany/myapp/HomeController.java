@@ -103,35 +103,44 @@ public class HomeController {
 	    public String Register(@ModelAttribute("userForm") User user,ModelMap model)
 	    {
 		 //	doctordao.listDoctors();
+
 		 	return "registration";
 	    }
 	 
 	 @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-	 public ModelAndView registerUser(@RequestParam ("acctype")String acc,@ModelAttribute("patientForm")Patient patient,@ModelAttribute("doctorForm")Doctor doctor, ModelMap model) 
+	 public ModelAndView registerUser(@RequestParam ("uname")String user, @RequestParam ("pass")String pass,@RequestParam ("acctype")String acc,@ModelAttribute("patientForm")Patient patient,@ModelAttribute("doctorForm")Doctor doctor, HttpServletRequest request) 
 	 {
-		 	if(acc.equals("patient"))
+		 	HttpSession session = request.getSession();
+		 	session.setAttribute("uname", request.getParameter("uname"));
+		 	session.setAttribute("pass", request.getParameter("pass"));
+		 	if(acc.equals("patient")){
+		 		System.out.println(firstName);
+		 		System.out.println(user);
 		 		return new ModelAndView("registerPatient", "patient", new Patient(userName,password,firstName,lastName,age,gender,telephone,email,height,weight));
-		 	else {
-		 		
-		 		return new ModelAndView("registerDoctor", "doctor", new Doctor(userName,password,firstName,lastName,age,gender,telephone,email,location,specialization,day,starttime,endtime));
-		 		}
+		 	}
+	 		else  
+		 		return new ModelAndView("registerDoctor", "doctor", new Doctor(userName,password,firstName,lastName,age,gender,telephone,email,location,specialization,day,time));
 	 }
 
 	 @RequestMapping(value = "/registerPatient", method = RequestMethod.POST)
-	 public String welcomePatient (@ModelAttribute("patientForm") Patient patient,ModelMap model)
+	 public String welcomePatient (@ModelAttribute("patientForm") Patient patient,ModelMap model, HttpServletRequest request)
 	 {
-		 firstName=userdao.addPatient(patient); 
-		 System.out.println(firstName);
-		 model.addAttribute("firstName",firstName);
+     	 String uname=(String) request.getSession().getAttribute("uname");
+     	 String pass=(String) request.getSession().getAttribute("pass");
+     	 patient.setUserName(uname);
+     	 patient.setPassword(pass);
+		 patient=userdao.addPatient(patient); 
+		 model.addAttribute("firstName",patient.getFirstName());
 		 return "welcomePatient";
 	 }
 	 
 	 @RequestMapping(value = "/registerDoctor", method = RequestMethod.POST)
 	 public String welcomeDoctor(@ModelAttribute("doctorForm") Doctor doctor,ModelMap model, HttpServletRequest request) 
 	 {
-		 String starttime=request.getParameter("starttime");
-	 	System.out.println(starttime);
-		 System.out.println(doctor.getStarttime());
+     	 String uname=(String) request.getSession().getAttribute("uname");
+     	 String pass=(String) request.getSession().getAttribute("pass");
+     	 doctor.setUserName(uname);
+     	  doctor.setPassword(pass);
 		 userdao.addDoctor(doctor); 
 		 return "welcomeDoctor";
 	 }

@@ -17,48 +17,40 @@
                 <tbody>
                     <tr>
                         <td>First Name</td>
-                        <td><input type="text" name="firstName" value="" /></td>
+                        <td><input type="text" name="firstName" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Last Name</td>
-                        <td><input type="text" name="lastName" value="" /></td>
+                        <td><input type="text" name="lastName" value="" required /></td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input type="text" name="email" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>User Name</td>
-                        <td><input type="text" name="userName" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>Password</td>
-                        <td><input type="password" name="password" value="" /></td>
+                        <td><input type="text" name="email" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Age</td>
-                        <td><input type="text" name="age" value="" /></td>
+                        <td><input type="text" name="age" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Gender</td>
-                        <td><form action="">
-							  <input type="radio" name="gender" value="male"> Male<br>
-							  <input type="radio" name="gender" value="female"> Female<br>
-							  <input type="radio" name="gender" value="other"> Other
+                        <td><form >
+							  <input type="radio" name="gender" value="male"required> Male<br>
+							  <input type="radio" name="gender" value="female"required> Female<br>
+							  <input type="radio" name="gender" value="other"required> Other
 							</form>
 						</td>
                     </tr>
                      <tr>
                         <td>Telephone</td>
-                        <td><input type="text" name="telephone" value="" /></td>
+                        <td><input type="text" name="telephone" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Height(cm)</td>
-                        <td><input type="text" name="height" value="" /></td>
+                        <td><input type="text" name="height" value="" required/></td>
                     </tr>
                     <tr>
                         <td>Weight(lbs)</td>
-                        <td><input type="text" name="weight" value="" /></td>
+                        <td><input type="text" name="weight" value="" required/></td>
                     </tr>
                     <tr>
                         <td><input type="submit" name='submit' value="Submit" /></td>

@@ -51,7 +51,7 @@ public class DBHandler{
 		            }
 		        session.getTransaction().commit();
 		   }
-			public String addPatient(Patient patient)
+			public Patient addPatient(Patient patient)
 			{
 		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		 		Session session = sessionFactory.openSession();
@@ -60,7 +60,7 @@ public class DBHandler{
 		 		 session.save(patient);	
 		 		 session.getTransaction().commit();
 		 		// session.close();
-		 		 return patient.getFirstName();
+		 		 return patient;
 			}
 			public boolean validateUsername(String username, String acctype) throws NamingException{
 			    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
