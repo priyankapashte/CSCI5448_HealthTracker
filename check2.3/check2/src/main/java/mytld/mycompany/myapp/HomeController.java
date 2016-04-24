@@ -68,25 +68,7 @@ public class HomeController {
 		  }
 		  return false;
 		}
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	 public String Logout(HttpServletRequest request) 
-	 {
-			HttpSession session = request.getSession();
-			session.setAttribute("patient", null);
-			session.setAttribute("doctor", null);
-			session.setAttribute("uname", null);
-			session.setAttribute("pass", null);
-			session.invalidate();
-	        return "index";
-	 }
-	@RequestMapping(value = "/homepagePatient", method = RequestMethod.GET)
-	 public String Homepage(HttpServletRequest request,ModelMap model) 
-	 {
-		 HttpSession session = request.getSession();
-		 Patient patient=(Patient)session.getAttribute("patient");
-		 model.addAttribute("firstName",patient.getFirstName());
-		 return "welcomePatient";
-	 }
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	 public String FirstPage(@ModelAttribute("userForm") User user,ModelMap model) 
 	 {
