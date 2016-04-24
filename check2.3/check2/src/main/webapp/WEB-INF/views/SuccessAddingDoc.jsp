@@ -8,5 +8,6 @@
 </head>
 <body>
 <H1>Doctor Sucessfully Added</H1>
+<a href='homepagePatient'>Home Page</a>
 </body>
 </html>

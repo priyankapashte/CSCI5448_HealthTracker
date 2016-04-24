@@ -12,6 +12,7 @@
     <form action="SetDoctor" method="post">
        <input type="submit" name="setdoc" value="Select/Deselect Advising Doctor">
     </form>
+    <a href='logout'>Log out</a>
     </body>
 </html>
 
