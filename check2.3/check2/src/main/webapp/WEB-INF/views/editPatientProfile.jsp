@@ -8,8 +8,9 @@
 </head>
 <body>
 <H1>Edit Profile</H1>
+<H1>${patient.id}</H1>
 
-<form method="post" action="registerPatient">
+<form method="post" action="editPatientProfile">
             <center>
             <table border="1" width="30%" cellpadding="5">
                 <thead>
@@ -48,7 +49,7 @@
                     </tr>
                     <tr>
                         <td><input type="submit" name='submit' value="Save" /></td>
-                        <td><input type="button" value="Cancel" onclick="welcomePatient"/></td>
+                        <td><input type="submit" value="Cancel" onclick="welcomePatient.jsp"/></td>
                     </tr>
                 </tbody>
             </table>

@@ -11,6 +11,6 @@
 <form action="AddDoctor" method="post">
        <input type="submit" name="setdoc" value="Add Advising Doctor">
 </form>
-
+<a href='homepagePatient'>Home Page</a>
 </body>
 </html>

@@ -6,12 +6,17 @@
     </head>
     <body>
     <H3>Welcome ${firstName} </H3>
-    <form action="welcomePatient" method="post">
+    <!-- shreya -->
+    <form action="editPatient" method="post">
+    <input type="submit" name="edit" value="Edit Profile">
+    </form>
+    <form action="appointment" method="post">
        <input type="submit" name="appoint" value="Appointment Scheduler">
     </form>
     <form action="SetDoctor" method="post">
        <input type="submit" name="setdoc" value="Select/Deselect Advising Doctor">
     </form>
+    <a href='logout'>Log out</a>
     </body>
 </html>
 

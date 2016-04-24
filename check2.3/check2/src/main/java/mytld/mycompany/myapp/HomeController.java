@@ -47,7 +47,7 @@ public class HomeController {
 	private String endtime;
 	//protected int id;
 	DBHandler userdao= new DBHandler();
-	
+
 	private boolean validatePassword(String password) {
 		  // Check for null, then a length less then 6 (and I really don't like the length()
 		  // > 10 check, that's a BAD requirement).
@@ -99,6 +99,26 @@ public class HomeController {
 		 }
 		 
 	 }
+	 
+	 @RequestMapping(value = "/logout", method = RequestMethod.GET)
+	 	 public String Logout(HttpServletRequest request) 
+	 	 {
+	 			HttpSession session = request.getSession();
+	 			session.setAttribute("patient", null);
+	 			session.setAttribute("doctor", null);
+	 			session.setAttribute("uname", null);
+	 			session.setAttribute("pass", null);
+	 			session.invalidate();
+	 	        return "index";
+	 	 }
+	 	@RequestMapping(value = "/homepagePatient", method = RequestMethod.GET)
+	 	 public String Homepage(HttpServletRequest request,ModelMap model) 
+	 	 {
+	 		 HttpSession session = request.getSession();
+	 		 Patient patient=(Patient)session.getAttribute("patient");
+	 		 model.addAttribute("firstName",patient.getFirstName());
+	 		 return "welcomePatient";
+	 	 }
 	 
 	 @RequestMapping(value = "/registration", method = RequestMethod.POST)
 	    public String Register(@ModelAttribute("userForm") User user,ModelMap model)
@@ -166,11 +186,13 @@ public class HomeController {
 	 @RequestMapping(value = "/registerPatient", method = RequestMethod.POST)
 	 public String welcomePatient (@ModelAttribute("patientForm") Patient patient,ModelMap model, HttpServletRequest request)
 	 {
-     	 String uname=(String) request.getSession().getAttribute("uname");
+     	 HttpSession session = request.getSession();
+		 String uname=(String) request.getSession().getAttribute("uname");
      	 String pass=(String) request.getSession().getAttribute("pass");
      	 patient.setUserName(uname);
      	 patient.setPassword(pass);
 		 patient=userdao.addPatient(patient); 
+		 session.setAttribute("patient", patient);
 		 model.addAttribute("firstName",patient.getFirstName());
 		 return "welcomePatient";
 	 }
@@ -183,14 +205,76 @@ public class HomeController {
      	 doctor.setUserName(uname);
      	 doctor.setPassword(pass);
 		 userdao.addDoctor(doctor); 
+		 model.addAttribute("firstName",doctor.getFirstName());
 		 return "welcomeDoctor";
 	 }
 	 
-	 @RequestMapping(value = "/welcomePatient", method = RequestMethod.POST)
-	 public String appointmentScheduler(@ModelAttribute("userForm") User user,ModelMap model) 
+	 @RequestMapping(value = "/appointment", method = RequestMethod.POST)
+	 public String appointmentScheduler(@ModelAttribute("patientForm") Patient patient,ModelMap model) 
 	 {
 		 		return "appointmentScheduler";
 	 }
+	 
+	 //shreya
+	 @RequestMapping(value = "/editDoctor", method = RequestMethod.POST)
+	 public ModelAndView editDoctor(@ModelAttribute("doctorForm") Doctor doctor,ModelMap model, HttpServletRequest request) 
+	 {
+		 HttpSession session = request.getSession();
+ 		 doctor=(Doctor)session.getAttribute("doctor");
+ 		 model.addAttribute("firstName",doctor.getFirstName());
+		 return new ModelAndView("editDoctorProfile", "doctor1", userdao.getDoctor(doctor.getUserName()));
+	 }
+	 
+	 //shreya
+	 @RequestMapping(value = "/editPatient", method = RequestMethod.POST)
+	 public ModelAndView editPatient(@ModelAttribute("patientForm") Patient patient,ModelMap model,HttpServletRequest request) 
+	 {
+		 HttpSession session = request.getSession();
+ 		 patient=(Patient)session.getAttribute("patient");
+ 		 model.addAttribute("firstName",patient.getFirstName());
+		 return new ModelAndView("editPatientProfile", "patient1", userdao.getPatient(patient.getUserName()));
+	 }
+	 
+	//shreya
+	@RequestMapping(value = "/editPatientProfile", method = RequestMethod.POST)
+	public String editPatientProfile(@ModelAttribute("patientForm") Patient patient1,ModelMap model, HttpServletRequest request) 
+	{	
+		HttpSession session = request.getSession();
+		Patient patient = (Patient) session.getAttribute("patient");
+		patient1.setId(patient.getId());
+		patient1.setGender(patient.getGender());
+		patient1.setUserName(patient.getUserName());
+		patient1.setPassword(patient.getPassword());
+		patient1.setAppointment(patient.getAppointment());
+		patient1.setDoctor(patient.getDoctor());
+		patient1.setHealthparameters(patient.getHealthparameters());
+		userdao.editPatientProfile(patient1);
+		patient1 = userdao.getPatient(patient1.getUserName());
+		session.setAttribute("patient", patient1);
+		model.addAttribute("firstName",patient1.getFirstName());
+		return "welcomePatient";
+	}
+	
+	//shreya
+		@RequestMapping(value = "/editdoctorProfile", method = RequestMethod.POST)
+		public String editDoctorProfile(@ModelAttribute("doctorForm") Doctor doctor1,ModelMap model, HttpServletRequest request) 
+		{	
+			HttpSession session = request.getSession();
+			Doctor doctor = (Doctor) session.getAttribute("doctor");
+			doctor1.setId(doctor.getId());
+			doctor1.setGender(doctor.getGender());
+			doctor1.setUserName(doctor.getUserName());
+			doctor1.setPassword(doctor.getPassword());
+			doctor1.setAppointments(doctor.getAppointments());
+			doctor1.setPatients(doctor.getPatients());
+			userdao.editDoctorProfile(doctor1);
+			doctor1 = userdao.getDoctor(doctor1.getUserName());
+			session.setAttribute("doctor", doctor1);
+			model.addAttribute("firstName",doctor1.getFirstName());
+			return "welcomeDoctor";
+		}
+		
+	
 	 @RequestMapping(value = "/SetDoctor", method = RequestMethod.POST)
 	 public ModelAndView SetDoctor(@ModelAttribute("userForm") User user,ModelMap model, HttpServletRequest request) 
 	 {
@@ -372,4 +456,6 @@ public class HomeController {
 			userdao.editPatientProfile(patient);
 			return new ModelAndView("adddoctor");
 	 }
+	 
+	 
 }
