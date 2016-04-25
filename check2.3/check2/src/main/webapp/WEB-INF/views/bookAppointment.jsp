@@ -42,7 +42,7 @@
 <table>
 
 <tr>
-<td>Choose the flavor you like:</td>
+<td>Select a doctor:</td>
 <td><form:radiobuttons path="${Doctors}" items="${Doctor}" name="SelectedDoctor"/></td>
 </tr>
 <tr>

@@ -65,6 +65,17 @@ public class DBHandler{
 		 		// session.close();
 		 		 return patient;
 			}
+			
+			public void addAppointment(Appointment appointment)
+			{
+				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		// this would save the Student_Info object into the database
+		 		 session.save(appointment);	
+		 		 session.getTransaction().commit();
+			}
+			
 			public boolean validateUsername(String username, String acctype) throws NamingException{
 			    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		 		Session session = sessionFactory.openSession();
@@ -167,7 +178,7 @@ public class DBHandler{
 		 		java.util.List allSpecializations = query.list();
 		 		return allSpecializations;
 		}
-			public java.util.List<Doctor> getDoctors(String loc,String Spl,String sort){
+/*			public java.util.List<Doctor> getDoctors(String loc,String Spl,String sort){
 				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		 		Session session = sessionFactory.openSession();
 		 		session.beginTransaction();
@@ -178,7 +189,7 @@ public class DBHandler{
             	query.setParameter("Specialization",Spl);
 		 		java.util.List<Doctor> allDoctors = query.list();
 		 		return allDoctors;
-			}
+			}*/
 			
 			public void editDoctorProfile(Doctor doctor)
 	 			{
