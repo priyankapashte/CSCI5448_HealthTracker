@@ -42,11 +42,11 @@
 </logger> -->
 
 <logger name="org.hibernate.SQL">
-    <level value="debug"/>
+    <level value="info"/>
 </logger>
 
 <logger name="org.hibernate.type">
-    <level value="trace"/>
+    <level value="info"/>
 </logger>
 
 	<!-- Root Logger -->

@@ -34,6 +34,9 @@ public class Doctor extends User {
 	
 	private String starttime;
 	private String endtime;
+	
+	private ArrayList<Patient> patients;
+	private ArrayList<Appointment> appointments;
 	 
 	public String getStarttime() {
 		return starttime;
@@ -47,14 +50,12 @@ public class Doctor extends User {
 	public void setEndtime(String endtime) {
 		this.endtime = endtime;
 	}
-	private ArrayList<Patient> patients;
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	private ArrayList<Appointment> appointments;
 	public String getLocation() {
 		return location;
 	}
@@ -73,7 +74,6 @@ public class Doctor extends User {
 	public void setDay(String day) {
 		this.day = day;
 	}
-	
 	public ArrayList<Patient> getPatients() {
 		return patients;
 	}

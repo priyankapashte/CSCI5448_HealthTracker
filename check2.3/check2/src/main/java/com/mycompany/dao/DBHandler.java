@@ -13,11 +13,12 @@ import javax.naming.NamingException;
 import javax.persistence.Id;
 import javax.sql.DataSource;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
+import org.hibernate.criterion.Restrictions;
 
 import com.mycompany.hibernate.HibernateUtil;
 import com.mycompany.model.*;
@@ -25,19 +26,25 @@ import com.mycompany.model.*;
 import antlr.collections.List;
 
 public class DBHandler{
-	
 		
-		public void addDoctor(Doctor doctor)
+		public Doctor addDoctor(Doctor doctor)
 		{
 	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	 		Session session = sessionFactory.openSession();
 	 		session.beginTransaction();
-	 		// this would save the Student_Info object into the database
-	 		 session.save(doctor);	
-	 		 session.getTransaction().commit();
-	 		// session.close();
+	 		session.save(doctor);	
+	 		session.getTransaction().commit();
+	 		return doctor;
 		}
-		
+		public Patient addPatient(Patient patient)
+		{
+	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+	 		Session session = sessionFactory.openSession();
+	 		session.beginTransaction();
+	 		session.save(patient);	
+	 		session.getTransaction().commit();
+	 		return patient;
+		}
 		   /* Method to  READ all the Doctors */
 		   public void listDoctors( ){
 			  
@@ -53,19 +60,7 @@ public class DBHandler{
 		            }
 		        session.getTransaction().commit();
 		   }
-			public Patient addPatient(Patient patient)
-			{
-		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
-		 		// this would save the Student_Info object into the database
-		 		 session.save(patient);	
-		 		 session.getTransaction().commit();
-		 		 //session.close();
-		 		// session.close();
-		 		 return patient;
-			}
-			
+		   
 			public void addAppointment(Appointment appointment)
 			{
 				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -177,26 +172,14 @@ public class DBHandler{
 		 		Query query=  session.createQuery(queried);
 		 		java.util.List allSpecializations = query.list();
 		 		return allSpecializations;
-		}
-/*			public java.util.List<Doctor> getDoctors(String loc,String Spl,String sort){
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
-		 		String queried="from Doctor D where D.location = :Location AND D.specialization = :Specialization order by "+ sort;
-		 		System.out.println(queried);
-		 		Query query=  session.createQuery(queried);
-		 		query.setParameter("Location",loc);
-            	query.setParameter("Specialization",Spl);
-		 		java.util.List<Doctor> allDoctors = query.list();
-		 		return allDoctors;
-			}*/
-			
+		 		}
+
 			public void editDoctorProfile(Doctor doctor)
 	 			{
 	 		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	 		 		Session session = sessionFactory.openSession();
 	 		 		session.beginTransaction();
-	 		 		session.saveOrUpdate(doctor);	
+	 		 		session.update(doctor);	
 	 		 		session.getTransaction().commit();
 	 			}
 			public void editPatientProfile(Patient patient)
@@ -205,28 +188,29 @@ public class DBHandler{
 		 		Session session = sessionFactory.openSession();
 		 		session.beginTransaction();
 		 		session.update(patient);
- 		 		
- 		 	/*String hql = "UPDATE Patient "
- 		 			+ "set age=:age, email=:email, firstName=:firstName, lastName=:lastName,"
-	 				+ "telephone=:telephone, height=:height,weight=:weight"
-	 				+ "  where id=:id";
-	 	    Query query = session.createQuery(hql);
-	 	    query.setParameter("age",patient.getAge());
-	 	    query.setParameter("email",patient.getEmail());
-	 	    query.setParameter("firstName",patient.getFirstName());
-	 	    query.setParameter("lastName",patient.getLastName());
-	 	    query.setParameter("telephone",patient.getTelephone());
-	 	    query.setParameter("height",patient.getHeight());
-	 	    query.setParameter("weight",patient.getWeight());
-	 	    query.setParameter("id",patient.getId());
-	 	    System.out.println(hql);
-	 	    int result = query.executeUpdate();
-	 		if(result == 0)
-	 			System.out.println("Error");
-	 		else
-	 			System.out.println("Executed");*/
-		 	session.getTransaction().commit();
+ 		 	 	session.getTransaction().commit();
  			}
+			public java.util.List<Patient> getPatients(int id)
+			{
+				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		Criteria criteria = session.createCriteria(Patient.class).createAlias("doctor", "d");
+		 		criteria.add(Restrictions.eq("d.id", id));
+		 		java.util.List<Patient> patients = criteria.list();
+		 		return patients;
+			}
+			public HealthParameters getHealthParameters(int patientId)
+			{
+				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		 		Session session = sessionFactory.openSession();
+		 		session.beginTransaction();
+		 		String queried="from HealthParameters H where H.id = :id";
+		 		Query query=  session.createQuery(queried);
+		 		query.setParameter("id",patientId);
+		 		java.util.List<HealthParameters> healthParameters = query.list();
+		 		return healthParameters.get(0);
+			}
 		
 
 }

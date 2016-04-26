@@ -51,6 +51,7 @@
 <tr>
 </table>
 </form>
+<a href='homepagePatient'>Home Page</a>
 </div>
 </body>
 </html>

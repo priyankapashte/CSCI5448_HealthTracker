@@ -8,7 +8,7 @@
 </head>
 <body>
 <H1>Edit Profile</H1>
-<H1>${patient.id}</H1>
+
 
 <form method="post" action="editPatientProfile">
             <center>
@@ -55,5 +55,6 @@
             </table>
             </center>
         </form>
+        <a href='homepagePatient'>Home Page</a>
 </body>
 </html>

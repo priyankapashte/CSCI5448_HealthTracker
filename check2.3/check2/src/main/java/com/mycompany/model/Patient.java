@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class Patient extends User
 {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected int id;
 	private int height;
 	private int weight;
@@ -25,7 +25,6 @@ public class Patient extends User
 	@OneToOne(cascade=CascadeType.ALL)
 	private HealthParameters healthparameters;
 	
-	//shreya
 	public int getId() {
 		return id;
 	}

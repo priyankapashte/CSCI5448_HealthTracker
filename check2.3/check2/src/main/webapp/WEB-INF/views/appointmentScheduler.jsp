@@ -11,5 +11,6 @@
        <input type="submit" name="appointtype" value="Reschedule Appointment"><br>
        <input type="submit" name="appointtype" value="Cancel Appointment"><br>
     </form>
+    <a href='homepagePatient'>Home Page</a>
     </body>
 </html>

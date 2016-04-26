@@ -6,7 +6,6 @@
     </head>
     <body>
     <H3>Welcome ${firstName} </H3>
-    <!-- shreya -->
     <form action="editPatient" method="post">
     <input type="submit" name="edit" value="Edit Profile">
     </form>

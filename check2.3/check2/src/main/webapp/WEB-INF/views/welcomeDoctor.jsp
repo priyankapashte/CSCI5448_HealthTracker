@@ -10,6 +10,10 @@
     <form action="editDoctor" method="post">
     <input type="submit" name="edit" value="Edit Profile">
     </form>
+    <form action="viewPatients" method="post">
+    <input type="submit" name="viewpatients" value="view Patients">
+    </form>
+    <a href='homepagePatient'>Home Page</a>
     </body>
 </html>
 

@@ -4,10 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Edit Profile</title>
 </head>
-<body>
- <form method="post" action="registerDoctor">
+<body> 
+ <form method="post" action="editDoctorProfile">
             <center>
             <table border="1" width="30%" cellpadding="5">
                 <thead>
@@ -38,11 +38,11 @@
                     </tr>
                     <tr>
                         <td>Availability - Days</td>
-                        <td><form action="">
+                        <td><form action="" required>
 							  <input type="checkbox" name="day" value="Monday"> Monday<br>
 							  <input type="checkbox" name="day" value="Tuesday"> Tuesday<br>
 							  <input type="checkbox" name="day" value="Wednesday"> Wednesday<br>
-							  <input type="checkbox" name="day" value="Thrusday"> Thrusday<br>
+							  <input type="checkbox" name="day" value="Thursday"> Thursday<br>
 							  <input type="checkbox" name="day" value="Friday"> Friday<br>
 							  <input type="checkbox" name="day" value="Saturday"> Saturday<br>
 							  <input type="checkbox" name="day" value="Sunday"> Sunday<br>
@@ -51,8 +51,7 @@
                     </tr>
                     <tr>
                         <td>Availability - Start Time</td>
-                        <td><form action="">
-							  <select name='starttime'>
+                        <td>	  <select name='starttime' required>
 								  <option value="0">00:00</option>
 								  <option value="1">01:00</option>
 								  <option value="2">02:00</option>
@@ -78,13 +77,12 @@
 								  <option value="22">22:00</option>
 								  <option value="23">23:00</option>
 							  </select>
-							</form>
 						</td>
                     </tr>
                                         <tr>
                         <td>Availability - End Time</td>
-                        <td><form action="">
-							  <select name='endtime'>
+                        <td>
+							  <select name='endtime' required>
 								  <option value="0">00:00</option>
 								  <option value="1">01:00</option>
 								  <option value="2">02:00</option>
@@ -110,7 +108,6 @@
 								  <option value="22">22:00</option>
 								  <option value="23">23:00</option>
 							  </select>
-							</form>
 						</td>
                     </tr>
                     <tr>
@@ -123,11 +120,12 @@
                     </tr>
                     <tr>
                         <td><input type="submit" name='Save' value="Submit" /></td>
-                        <td><input type="button" value="Cancel" onclick="welcomeDoctor"/></td>
+                        <td><input type="submit" value="Cancel" onclick="welcomeDoctor"/></td>
                     </tr>
                 </tbody>
             </table>
             </center>
         </form>
+        <a href='homepageDoctor'>Home Page</a>
 </body>
 </html>
