@@ -42,8 +42,9 @@
 <table>
 
 <tr>
-<td>Select the Advising Doctor:</td>
-<td><form:radiobuttons path="${Doctors}" items="${Doctor}" name="SelectedDoctor"/></td>
+<td>Select the Advising Doctor:</td></tr>
+<tr>
+<td><form:radiobuttons path="${Doctors}" items="${Doctor}" name="SelectedDoctor" element="li"/></td>
 </tr>
 <tr>
 <td><input type="submit" name="submit" value="Select"></td>

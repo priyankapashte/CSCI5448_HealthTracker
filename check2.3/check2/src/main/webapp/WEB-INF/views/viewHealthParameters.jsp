@@ -11,7 +11,6 @@
 <label>Average Heart rate: </label>${healthParameters.avgHeartrate}<br>
 <label>Sleep: </label>${healthParameters.sleep}<br>
 <label>Calories burnt: </label>${healthParameters.calories}<br>
-<input type="submit" value="Back" onClick="welcomeDoctor"/>
 </form>
 <a href='homepageDoctor'>Home Page</a>
 </body>

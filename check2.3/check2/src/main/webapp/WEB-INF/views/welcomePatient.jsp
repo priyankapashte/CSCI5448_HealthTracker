@@ -15,6 +15,9 @@
     <form action="SetDoctor" method="post">
        <input type="submit" name="setdoc" value="Select/Deselect Advising Doctor">
     </form>
+    <form action="viewHealthparametersPatient" method="post">
+       <input type="submit" name="view" value="View Health Parameters">
+    </form>
     <a href='logout'>Log out</a>
     </body>
 </html>

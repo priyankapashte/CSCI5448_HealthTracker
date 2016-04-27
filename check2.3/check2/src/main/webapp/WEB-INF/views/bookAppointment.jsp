@@ -34,23 +34,29 @@
 		   <option value="specialization">Specialization</option>
     <select></td>
 </tr>
-<input type="text" name="date">
+<tr> Date:<input type="text" name="date"> </tr>
 </table>
-<input type="submit" name="Search" value="Search">
+<input type="submit" name="Search" value="Search">&nbsp&nbsp<a href='homepagePatient'>Cancel</a>
 </form>
+
+
+<div style="${Display}">
+
 <form method= "post" action="addDoctor" >
 <table>
 
 <tr>
-<td>Select a doctor:</td>
-<td><form:radiobuttons path="${Doctors}" items="${Doctor}" name="SelectedDoctor"/></td>
+<H2>Select a doctor:<H2>
 </tr>
 <tr>
-<td><input type="submit" name="submit" value="Select"></td>
+<form:radiobuttons path="${Doctors}" items="${Doctor}" name="SelectedDoctor" element="li"/>
+</tr>
+<tr>
+<td><input type="submit" name="submit" value="Select">&nbsp&nbsp<a href='homepagePatient'>Cancel</a></td>
 </tr>
 <tr>
 </table>
 </form>
-<a href='homepagePatient'>Home Page</a>
+</div>
 </body>
 </html>

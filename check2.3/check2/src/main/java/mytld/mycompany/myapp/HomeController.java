@@ -10,6 +10,10 @@ import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -71,7 +75,7 @@ public class HomeController {
 		}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	 public String FirstPage(@ModelAttribute("userForm") User user,ModelMap model) 
+	public String FirstPage(ModelMap model) 
 	 {
 	        return "index";
 	 }
@@ -131,7 +135,7 @@ public class HomeController {
 	 	 }
 	 
 	 @RequestMapping(value = "/registration", method = RequestMethod.POST)
-	    public String Register(@ModelAttribute("userForm") User user,ModelMap model)
+	    public String Register()
 	    {
 		 //	doctordao.listDoctors();
 
@@ -222,7 +226,7 @@ public class HomeController {
 	 }
 	 
 	 @RequestMapping(value = "/appointment", method = RequestMethod.POST)
-	 public String appointmentScheduler(@ModelAttribute("patientForm") Patient patient,ModelMap model) 
+	 public String appointmentScheduler() 
 	 {
 		 		return "appointmentScheduler";
 	 }
@@ -322,20 +326,43 @@ public class HomeController {
 				return "viewPatients";
 		}
 		
-		@RequestMapping(value = "/viewList", method = RequestMethod.POST)
-		public String viewList(@RequestParam("listedPatients")String selected, @ModelAttribute("doctorForm") Doctor doctor1, ModelMap model, HttpServletRequest request) 
+		@RequestMapping(value = "/view", method = RequestMethod.POST)
+		public String viewList(@RequestParam("listedPatients")String selected, @RequestParam(value = "viewProfile", required=false)String profile, @RequestParam(value = "ViewHealthParameters", required=false)String health,  @ModelAttribute("doctorForm") Doctor doctor1, ModelMap model, HttpServletRequest request) 
 		{
+			if(profile == null || profile.isEmpty())
+			{
 			System.out.println("selected patient:"+selected);
 			int id= Integer.parseInt(selected.split("\\s+")[1]);
 			System.out.println(id);
 			HealthParameters healthParameters = userdao.getHealthParameters(id);
 			model.addAttribute("healthParameters", healthParameters);
 			System.out.println("Calories: "+healthParameters.getCalories());
+			return "viewHealthParameters";
+			}
+			else
+			{
+				HttpSession session = request.getSession();
+				int id = Integer.parseInt(selected.split("\\s+")[1]);
+				System.out.println(id);
+				Patient patient = userdao.getPatientById(id);
+				session.setAttribute("patient", patient);
+				return "viewPatientProfile";
+			}
+				
+		}
+		@RequestMapping(value = "/viewHealthparametersPatient", method = RequestMethod.POST)
+		public String viewHealthParameters(@ModelAttribute("patientForm") Patient patient, ModelMap model, HttpServletRequest request) 
+		{
+			HttpSession session = request.getSession();
+	 		patient=(Patient)session.getAttribute("patient");
+			HealthParameters healthParameters = userdao.getHealthParameters(patient.getId());
+			model.addAttribute("healthParameters", healthParameters);
+			System.out.println("Calories: "+healthParameters.getCalories());
 			return "viewHealthParameters";	
 		}
 		
 	 @RequestMapping(value = "/SetDoctor", method = RequestMethod.POST)
-	 public ModelAndView SetDoctor(@ModelAttribute("userForm") User user,ModelMap model, HttpServletRequest request) 
+	 public ModelAndView SetDoctor(ModelMap model, HttpServletRequest request) 
 	 {
 		 		HttpSession session = request.getSession();
 				Patient patient = (Patient)session.getAttribute("patient");
@@ -345,10 +372,9 @@ public class HomeController {
 				}
 				else{
 					Doctor AdvisingDoctor=patient.getDoctor();
-					String DocInfo = AdvisingDoctor.getFirstName()+ " "+AdvisingDoctor.getLastName()+" "+AdvisingDoctor.getEmail() 
-					         +" "+ AdvisingDoctor.getAge()+" "+AdvisingDoctor.getTelephone()+" "+AdvisingDoctor.getDay()
-					         +" "+AdvisingDoctor.getLocation()+" "+AdvisingDoctor.getSpecialization()+ " "+AdvisingDoctor.getStarttime()
-					         +" "+AdvisingDoctor.getEndtime();
+					String DocInfo = AdvisingDoctor.getId()+ " "+AdvisingDoctor.getFirstName()+ " "+AdvisingDoctor.getLastName()+" "+AdvisingDoctor.getEmail()+
+					         " "+AdvisingDoctor.getLocation()+" "+AdvisingDoctor.getSpecialization();
+
 					System.out.println(DocInfo);
 					model.addAttribute("DocInfo",DocInfo);
 					return new ModelAndView("removedoctor");
@@ -356,7 +382,7 @@ public class HomeController {
 					
 	 }
 	 @RequestMapping(value = "/AddDoctor", method = RequestMethod.POST)
-	 public String AddDoctor(@ModelAttribute("userForm") User user,ModelMap model) 
+	 public String AddDoctor(ModelMap model) 
 	 {
 		 java.util.List Location = userdao.getLocations(); 
 		 for (int i = 0; i<Location.size();i++){		 
@@ -378,8 +404,9 @@ public class HomeController {
 	 }
 	 
 	 @RequestMapping(value = "/scheduler", method = RequestMethod.POST)
-	 public String appointmentScheduler(@RequestParam ("appointtype")String app,@ModelAttribute("userForm") User user,ModelMap model) 
+	 public String appointmentScheduler(@RequestParam ("appointtype")String app,ModelMap model)
 	 {
+		 model.addAttribute("Display","display:none");
 		 if(app.equals("Book Appointment")){
 			 java.util.List Location = userdao.getLocations(); 
 			 for (int i = 0; i<Location.size();i++){		 
@@ -406,7 +433,7 @@ public class HomeController {
 	 }
 	 
 	 @RequestMapping(value = "/searchadvisingdoctor", method = RequestMethod.POST)
-	 public String DisplayDoctors(@RequestParam ("LocationSelected")String loc,@RequestParam ("SortPref")String sort,@RequestParam ("SpecializationSelected")String Spl,@ModelAttribute("userForm") User user,ModelMap model) 
+	 public String displayDoctors(@RequestParam ("LocationSelected")String loc,@RequestParam ("SortPref")String sort,@RequestParam ("SpecializationSelected")String Spl,ModelMap model) 
 	 {
 		 java.util.List<Doctor> Doctors = null;
 		 if(sort.equals("location"))
@@ -426,10 +453,9 @@ public class HomeController {
 		 }
 		 List<String> DoctorInfo=new ArrayList<String>();
 		 for (int i = 0; i<Doctors.size();i++){	
-			 DoctorInfo.add(Doctors.get(i).getId()+ " "+Doctors.get(i).getFirstName()+ " "+Doctors.get(i).getLastName()+" "+Doctors.get(i).getEmail() 
-					         +" "+ Doctors.get(i).getAge()+" "+Doctors.get(i).getTelephone()+" "+Doctors.get(i).getDay()
-					         +" "+Doctors.get(i).getLocation()+" "+Doctors.get(i).getSpecialization()+ " "+Doctors.get(i).getStarttime()
-					         +" "+Doctors.get(i).getEndtime());
+			 DoctorInfo.add(Doctors.get(i).getId()+ " "+Doctors.get(i).getFirstName()+ " "+Doctors.get(i).getLastName()+" "+Doctors.get(i).getEmail()+
+			         " "+Doctors.get(i).getLocation()+" "+Doctors.get(i).getSpecialization());
+
 			 System.out.println(Doctors.get(i).getFirstName());
 		 }
 		 if(DoctorInfo.size()==0){
@@ -460,12 +486,9 @@ public class HomeController {
 		 return "displayDoctors";
 	 }
 	 @RequestMapping(value = "/search", method = RequestMethod.POST)
-	 public String DisplaySearch(@RequestParam ("LocationSelected")String loc,@RequestParam ("SortPref")String sort,@RequestParam ("SpecializationSelected")String Spl,@ModelAttribute("userForm") User user,ModelMap model) 
+	 public String DisplaySearch(@RequestParam ("LocationSelected")String loc,@RequestParam ("date")String d,@RequestParam ("SortPref")String sort,@RequestParam ("SpecializationSelected")String Spl,@ModelAttribute("userForm") User user,ModelMap model) throws ParseException 
 	 {
-		 System.out.println(loc);
-		 System.out.println(sort);
-		 System.out.println(Spl);
-		 java.util.List<Doctor> Doctors = null;
+		 java.util.List<Doctor> Doctors = null; 
 		 if(sort.equals("location"))
 		 {
 			 ContextSort context = new ContextSort(new LocationSort());
@@ -482,13 +505,19 @@ public class HomeController {
 			 Doctors = context.executeSort(loc, Spl);
 		 }
 		// java.util.List<Doctor> Doctors = userdao.getDoctors(loc,Spl,sort); 
+		 
 		 List<String> DoctorInfo=new ArrayList<String>();
+		 
 		 for (int i = 0; i<Doctors.size();i++){	
 			 DoctorInfo.add(Doctors.get(i).getId()+ " "+Doctors.get(i).getFirstName()+ " "+Doctors.get(i).getLastName()+" "+Doctors.get(i).getEmail() 
-					         +" "+ Doctors.get(i).getAge()+" "+Doctors.get(i).getTelephone()+" "+Doctors.get(i).getDay()
-					         +" "+Doctors.get(i).getLocation()+" "+Doctors.get(i).getSpecialization()+ " "+Doctors.get(i).getStarttime()
-					         +" "+Doctors.get(i).getEndtime());
+					         +" "+ Doctors.get(i).getAge()+" "+Doctors.get(i).getTelephone()+" "+Doctors.get(i).getLocation()+" "+Doctors.get(i).getSpecialization());
 			 System.out.println(Doctors.get(i).getFirstName());
+		 }
+		 if(DoctorInfo.size()==0){
+			 model.addAttribute("Display","display:none");
+		 }
+		 else{
+			 model.addAttribute("Display","display:show"); 
 		 }
 		 model.addAttribute("Doctor",DoctorInfo);
 		 model.addAttribute("Doctors","Doctors");
@@ -509,11 +538,19 @@ public class HomeController {
 		
 		 model.addAttribute("Location",Location);
 		 model.addAttribute("Locations","Locations");
+		 
+		
+		 SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy");
+		 Date dt1=format1.parse(d);
+		 DateFormat format2=new SimpleDateFormat("EEEE"); 
+		 String finalDay=format2.format(dt1);
+		 System.out.println(finalDay);
+		  
 		 return "bookAppointment";
 	 }
 	 
 	 @RequestMapping(value = "/addDoctor", method = RequestMethod.POST)
-	 public String addDoctor(@ModelAttribute("patientForm") Doctor doct,@RequestParam ("SelectedDoctor")String doc,HttpServletRequest request, ModelMap model) 
+	 public String addSelectedDoctor(@RequestParam ("SelectedDoctor")String doc,HttpServletRequest request, ModelMap model) 
 	 {
 		System.out.println(doc); 
 		Patient patient = (Patient)request.getSession().getAttribute("patient");
@@ -550,7 +587,7 @@ public class HomeController {
 		return "AppointmentList";
 	 }
 	 @RequestMapping(value = "/selectAppointment", method = RequestMethod.POST)
-	 public String addDoctor(@RequestParam ("SelectedAppointment")String a, HttpServletRequest request, ModelMap model) 
+	 public String addAppointmentDoctor(@RequestParam ("SelectedAppointment")String a, HttpServletRequest request, ModelMap model) 
 	 {
 		 Appointment appoint=new Appointment();
 		 Patient patient = (Patient)request.getSession().getAttribute("patient");
@@ -559,12 +596,12 @@ public class HomeController {
 		 appoint.setDoctor(doctor);
 		 appoint.setPatient(patient);
 		 userdao.addAppointment(appoint);
-		 patient.setDoctor(doctor);
-		 userdao.editPatientProfile(patient);
+		 patient.setAppointment(appoint);
 		 request.getSession().setAttribute("doctor", null);
 		 System.out.println(a);
 		 return "AppointmentConfirm";
 	 }
+	
 	 @RequestMapping(value = "/DeselectDoctor", method = RequestMethod.POST)
 	 public ModelAndView removeAdvisingDoctor(HttpServletRequest request) 
 	 {
@@ -572,6 +609,21 @@ public class HomeController {
 			patient.setDoctor(null);
 			userdao.editPatientProfile(patient);
 			return new ModelAndView("adddoctor");
+	 }
+	 @RequestMapping(value = "CancelAppointment", method = RequestMethod.POST)
+	 public String cancelAppointment(HttpServletRequest request)
+	 {
+		 Patient patient = (Patient)request.getSession().getAttribute("patient");
+		 Appointment app = patient.getAppointment();
+		 System.out.println(app);
+		 
+		 app.setDoctor(null);
+		 app.setPatient(null);
+		 app.setDateTime(null);
+		 patient.setAppointment(null);
+		 userdao.cancelAppointment(app);
+		 userdao.editPatientProfile(patient);
+		 return "appointmentScheduler";
 	 }
 	 
 	 

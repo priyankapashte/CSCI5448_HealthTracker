@@ -27,20 +27,24 @@ import antlr.collections.List;
 
 public class DBHandler{
 		
+	/*Extract Method to initiate session*/
+	public Session beginSession()
+	{
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+ 		Session session = sessionFactory.openSession();
+ 		session.beginTransaction();
+ 		return session;
+	}
 		public Doctor addDoctor(Doctor doctor)
 		{
-	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	 		Session session = sessionFactory.openSession();
-	 		session.beginTransaction();
+			Session session= beginSession();
 	 		session.save(doctor);	
 	 		session.getTransaction().commit();
 	 		return doctor;
 		}
 		public Patient addPatient(Patient patient)
 		{
-	    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	 		Session session = sessionFactory.openSession();
-	 		session.beginTransaction();
+			Session session= beginSession();
 	 		session.save(patient);	
 	 		session.getTransaction().commit();
 	 		return patient;
@@ -48,9 +52,7 @@ public class DBHandler{
 		   /* Method to  READ all the Doctors */
 		   public void listDoctors( ){
 			  
-			   SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+			   Session session= beginSession();
 		        List allpatients = (List)session.createQuery("SELECT * FROM patient").list();
 		        for (Iterator it = ((java.util.List) allpatients).iterator(); it.hasNext(); ) {
 		               Object[] myResult = (Object[]) it.next();
@@ -63,18 +65,14 @@ public class DBHandler{
 		   
 			public void addAppointment(Appointment appointment)
 			{
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		// this would save the Student_Info object into the database
 		 		 session.save(appointment);	
 		 		 session.getTransaction().commit();
 			}
 			
 			public boolean validateUsername(String username, String acctype) throws NamingException{
-			    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		String queried="from "+ acctype + " A WHERE A.userName = :username" ;
 		 		System.out.println(queried);
 		 		Query query=  session.createQuery(queried);
@@ -86,9 +84,7 @@ public class DBHandler{
 		        return true;
 		    }
 			public Patient getPatient(String username){
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		String queried="from Patient P where P.userName = :username" ;
 		 		System.out.println(queried);
 		 		Query query=  session.createQuery(queried);
@@ -97,9 +93,7 @@ public class DBHandler{
 				return patient.get(0);
 			}
 			public Doctor getDoctor(String username){
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		String queried="from Doctor D where D.userName = :username" ;
 		 		System.out.println(queried);
 		 		Query query=  session.createQuery(queried);
@@ -108,9 +102,7 @@ public class DBHandler{
 				return doctor.get(0);
 			}
 			public Doctor getDoctorbyID(int ID){
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		String queried="from Doctor D where D.id = :ID" ;
 		 		System.out.println(queried);
 		 		Query query=  session.createQuery(queried);
@@ -121,9 +113,7 @@ public class DBHandler{
 			public String validateUser(String username, String password) throws NamingException 
 		    {
 				String UserType = "Unregistered";
-			    SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 	            boolean isDoctor=validateUsername(username,"Doctor");
 	            boolean isPatient=validateUsername(username,"Patient");
 	            if(isDoctor){
@@ -154,20 +144,16 @@ public class DBHandler{
 		 		
 		     } 
 			public java.util.List getLocations(){
-				 	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-			 		Session session = sessionFactory.openSession();
-			 		session.beginTransaction();
-			 		String queried="select location from Doctor order by location" ;
+					Session session= beginSession();
+			 		String queried="select distinct location from Doctor order by location" ;
 			 		System.out.println(queried);
 			 		Query query=  session.createQuery(queried);
 			 		java.util.List allLocations = query.list();
 			 		return allLocations;
 			}
 			public java.util.List getSpecializations(){
-			 	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
-		 		String queried="select specialization from Doctor order by specialization" ;
+				Session session= beginSession();
+		 		String queried="select distinct specialization from Doctor order by specialization" ;
 		 		System.out.println(queried);
 		 		Query query=  session.createQuery(queried);
 		 		java.util.List allSpecializations = query.list();
@@ -176,25 +162,19 @@ public class DBHandler{
 
 			public void editDoctorProfile(Doctor doctor)
 	 			{
-	 		    	SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	 		 		Session session = sessionFactory.openSession();
-	 		 		session.beginTransaction();
+					Session session= beginSession();
 	 		 		session.update(doctor);	
 	 		 		session.getTransaction().commit();
 	 			}
 			public void editPatientProfile(Patient patient)
  			{
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		session.update(patient);
  		 	 	session.getTransaction().commit();
  			}
 			public java.util.List<Patient> getPatients(int id)
 			{
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		Criteria criteria = session.createCriteria(Patient.class).createAlias("doctor", "d");
 		 		criteria.add(Restrictions.eq("d.id", id));
 		 		java.util.List<Patient> patients = criteria.list();
@@ -202,14 +182,37 @@ public class DBHandler{
 			}
 			public HealthParameters getHealthParameters(int patientId)
 			{
-				SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		 		Session session = sessionFactory.openSession();
-		 		session.beginTransaction();
+				Session session= beginSession();
 		 		String queried="from HealthParameters H where H.id = :id";
 		 		Query query=  session.createQuery(queried);
 		 		query.setParameter("id",patientId);
 		 		java.util.List<HealthParameters> healthParameters = query.list();
 		 		return healthParameters.get(0);
+			}
+			public Patient getPatientById(int id){
+				Session session= beginSession();
+		 		String queried="from Patient P where P.id = :id" ;
+		 		System.out.println(queried);
+		 		Query query=  session.createQuery(queried);
+		 		query.setParameter("id",id);
+		 		java.util.List<Patient> patient = query.list();
+				return patient.get(0);
+			}
+			public Appointment getAppointmentbyPatientID(int ID)
+			{
+				Session session= beginSession();
+			 	String queried="from Appointment A where A.patient = :ID" ;
+			 	System.out.println(queried);
+			 	Query query=  session.createQuery(queried);
+			 	query.setParameter("ID",ID);
+			 	java.util.List<Appointment> appoint = query.list();
+				return appoint.get(0);
+			}
+			public void cancelAppointment(Appointment app)
+			{
+				Session session= beginSession();
+				session.saveOrUpdate(app);
+				session.getTransaction().commit();
 			}
 		
 

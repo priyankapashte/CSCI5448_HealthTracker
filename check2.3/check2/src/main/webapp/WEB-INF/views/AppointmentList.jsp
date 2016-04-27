@@ -11,17 +11,22 @@
 </head>
 <body>
 <H1>Appointment List</H1>
-<label>Day: ${day} </label>
-<label>Start Time: </label>
-<label>End Time: ${endtime} </label>
-
 
 <form method= "post" action="selectAppointment" >
 <table>
 <tr>
-<td>Select an Appointment:</td>
+<td><H2>Select an Appointment:</H2></td>
+</tr>
+<tr>
+<td>
+<H3>Select a Day:</H3>
+</td>
+</tr>
 <tr>
 <td><form:radiobuttons path="${d}" items="${days}" name="SelectDay"/></td>
+</tr>
+<tr>
+<td><H3>Select a Time Slot:</H3></td>
 </tr>
 <tr> 
 <td><form:radiobuttons path="${appoint}" items="${slots}" name="SelectedAppointment"/></td>
@@ -32,6 +37,5 @@
 <tr>
 </table>
 </form>
-<a href='homepagePatient'>Home Page</a>
 </body>
 </html>

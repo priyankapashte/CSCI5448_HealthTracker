@@ -11,11 +11,12 @@
 </head>
 <body>
 <div style="${Display}">
-<form method= "post" action="viewList" >	
+<form method= "post" action="view" >	
 <table>
-	<tr><td><form:radiobuttons path="${patients}" items="${patientsList}" name="listedPatients"/><td></tr>
+	<tr><td><form:radiobuttons path="${patients}" items="${patientsList}" name="listedPatients" element="li"/><td></tr>
 	<tr>
-<td><input type="submit" name="View Health Parameters" value="select"></td>
+<td><input type="submit" name="ViewHealthParameters" value="View Health Parameters"></td></tr>
+<tr><td><input type="submit" name="viewProfile" value="View Profile"></td>
 </tr>
 </table>
 </form>

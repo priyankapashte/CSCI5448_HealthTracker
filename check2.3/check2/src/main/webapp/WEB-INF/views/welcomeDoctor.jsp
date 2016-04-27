@@ -13,7 +13,7 @@
     <form action="viewPatients" method="post">
     <input type="submit" name="viewpatients" value="view Patients">
     </form>
-    <a href='homepagePatient'>Home Page</a>
+    <a href='logout'>Log out</a>
     </body>
 </html>
 

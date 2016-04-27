@@ -7,6 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<form action="CancelAppointment" method="post">
+       <input type="submit" name="setdoc" value="Cancel Current Appointment">
+</form>
 </body>
 </html>
